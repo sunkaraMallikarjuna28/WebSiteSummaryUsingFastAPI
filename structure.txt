@@ -1,0 +1,84 @@
+website-summarizer/
+├── README.md
+├── requirements.txt
+├── .env.example
+├── .gitignore
+├── main.py
+├── app/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── models.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── scraper.py
+│   │   └── summarizer.py
+│   └── api/
+│       ├── __init__.py
+│       └── routes.py
+└── tests/
+    ├── __init__.py
+    └── test_main.py
+
+// installation
+
+# Clone or create the project directory
+mkdir website-summarizer
+cd website-summarizer
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your OpenAI API key
+
+
+//running the application
+# Development mode
+python main.py
+
+# Or using uvicorn directly
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+# Production mode
+uvicorn main:app --host 0.0.0.0 --port 8000
+
+//usage url
+# Health check
+curl http://localhost:8000/api/v1/health
+
+# Summarize a website
+curl -X POST "http://localhost:8000/api/v1/summarize" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com", "summary_length": 150}'
+
+
+//using python requests
+
+import requests
+
+# Summarize a website
+response = requests.post(
+    "http://localhost:8000/api/v1/summarize",
+    json={
+        "url": "https://example.com",
+        "summary_length": 200
+    }
+)
+
+result = response.json()
+print(f"Title: {result['title']}")
+print(f"Summary: {result['summary']}")
+print(f"Word Count: {result['word_count']}")
+
+//running
+API Documentation
+Once running, visit:
+
+Interactive docs: http://localhost:8000/docs
+
+Alternative docs: http://localhost:8000/redoc
